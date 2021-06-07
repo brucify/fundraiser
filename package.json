@@ -1,0 +1,25 @@
+{
+  "name": "fundraiser",
+  "version": "1.0.0",
+  "description": "truffle unbox react",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brucify/fundraiser.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brucify/fundraiser/issues"
+  },
+  "homepage": "https://github.com/brucify/fundraiser#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.1.0"
+  }
+}
