@@ -66,9 +66,7 @@ contract("Fundraiser", accounts => {
                 await fundraiser.setBeneficiary(newBeneficiary, {from: accounts[3]});
                 assert.fail("Withdraw was not restricted to owners")
             } catch (error) {
-                const expectedError = "Ownable: caller is not the owner";
-                const actualError = error.reason;
-                assert.equal(actualError, expectedError, "Error reason should match");
+                assert.equal(error.reason, "Ownable: caller is not the owner", "Error reason text should match");
             }
         });
     });
@@ -78,11 +76,11 @@ contract("Fundraiser", accounts => {
         const donor = accounts[2];
 
         it("increases myDonationsCount", async() => {
-            const currentDonationsCount = await fundraiser.myDonationsCount({from: donor});
+            const count0 = await fundraiser.myDonationsCount({from: donor});
             await fundraiser.donate({from: donor, value});
-            const newDonationsCount = await fundraiser.myDonationsCount({from: donor});
+            const count1 = await fundraiser.myDonationsCount({from: donor});
 
-            assert.equal(1, newDonationsCount - currentDonationsCount, "myDonationsCount should increment by 1");
+            assert.equal(count1 - count0, 1, "myDonationsCount should increment by 1");
         });
 
         it("includes donation in myDonations", async() => {
@@ -106,6 +104,12 @@ contract("Fundraiser", accounts => {
             const count1 = await fundraiser.donationsCount();
 
             assert.equal(count1 - count0, 1, "donationsCount should increment by 1");
+        });
+
+        it("emits the DonationReceived event", async() => {
+            const tx = await fundraiser.donate({from: donor, value: value});
+            assert.equal(tx.logs[0].event, "DonationsReceived", "event name should match");
+            assert.equal(tx.logs[0].args.value, value, "value field should match");
         });
     });
 });
