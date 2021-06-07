@@ -51,4 +51,26 @@ contract("Fundraiser", accounts => {
         });
 
     });
+
+    describe("setBeneficiary", () => {
+        const newBeneficiary = accounts[2];
+
+        it("updates beneficiary when called by owner account", async() => {
+            await fundraiser.setBeneficiary(newBeneficiary, {from: owner});
+            const actual = await fundraiser.beneficiary();
+            assert.equal(actual, newBeneficiary, "New beneficiary should match");
+        });
+
+        it("updates beneficiary when called by a non-owner account", async() => {
+            try {
+                await fundraiser.setBeneficiary(newBeneficiary, {from: accounts[3]});
+                assert.fail("Withdraw was not restricted to owners")
+            } catch (error) {
+                const expectedError = "Ownable: caller is not the owner";
+                const actualError = error.reason;
+                assert.equal(actualError, expectedError, "Error reason should match");
+            }
+        });
+
+    });
 });
