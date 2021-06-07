@@ -14,6 +14,7 @@ contract Fundraiser is Ownable {
     mapping(address => Donation[]) private _donations;
 
     uint256 public totalDonations;
+    uint256 public donationsCount;
     string public name;
     string public url;
     string public imageURL;
@@ -51,6 +52,7 @@ contract Fundraiser is Ownable {
         });
         _donations[msg.sender].push(donation);
         totalDonations = totalDonations.add(msg.value);
+        donationsCount++;
     }
 
     function myDonations() public view returns( uint256[] memory values

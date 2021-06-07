@@ -99,5 +99,13 @@ contract("Fundraiser", accounts => {
 
             assert.equal(total1 - total0, value, "Diff should match");
         });
+
+        it("increases the donationsCount", async() => {
+            const count0 = await fundraiser.donationsCount();
+            await fundraiser.donate({from: donor, value: value});
+            const count1 = await fundraiser.donationsCount();
+
+            assert.equal(count1 - count0, 1, "donationsCount should increment by 1");
+        });
     });
 });
