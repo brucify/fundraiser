@@ -44,7 +44,8 @@ contract Fundraiser is Ownable {
     }
 
     function withdraw() public onlyOwner {
-        
+        uint256 balance = address(this).balance;
+        beneficiary.transfer(balance);
     }
 
     function myDonationsCount() public view returns(uint256) {

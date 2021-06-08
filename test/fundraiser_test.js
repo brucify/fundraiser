@@ -115,7 +115,7 @@ contract("Fundraiser", accounts => {
 
     describe("withdrawing funds", () => {
         beforeEach(async () => {
-            await fundraiser.donate({from: accounts[2], value: web3.utils.toWei('0.1')});
+            await fundraiser.donate({from: accounts[2], value: web3.utils.toWei('0.2')});
         });
 
         describe("access controls", () => {
@@ -136,6 +136,21 @@ contract("Fundraiser", accounts => {
                     assert.fail("should not have thrown an error")
                 }
             });
+        });
+
+        it("transfers balance to beneficiary", async() => {
+            await fundraiser.setBeneficiary(beneficiary, {from: owner}); // reset beneficiary address
+
+            const contractBalance0 = await web3.eth.getBalance(fundraiser.address);
+            const beneficiaryBalance0 = await web3.eth.getBalance(beneficiary);
+
+            await fundraiser.withdraw({from: owner});
+
+            const contractBalance1 = await web3.eth.getBalance(fundraiser.address);
+            const beneficiaryBalance1 = await web3.eth.getBalance(beneficiary);
+
+            assert.equal(contractBalance1, 0, "contract balance should be 0");
+            assert.equal(beneficiaryBalance1-beneficiaryBalance0, contractBalance0, "beneficiary should have received all contract balance");
         });
     });
 });
