@@ -43,6 +43,10 @@ contract Fundraiser is Ownable {
         beneficiary = _beneficiary;
     }
 
+    function withdraw() public onlyOwner {
+        
+    }
+
     function myDonationsCount() public view returns(uint256) {
         return _donations[msg.sender].length;
     }

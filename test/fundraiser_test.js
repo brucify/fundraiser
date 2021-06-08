@@ -112,4 +112,30 @@ contract("Fundraiser", accounts => {
             assert.equal(tx.logs[0].args.value, value, "value field should match");
         });
     });
+
+    describe("withdrawing funds", () => {
+        beforeEach(async () => {
+            await fundraiser.donate({from: accounts[2], value: web3.utils.toWei('0.1')});
+        });
+
+        describe("access controls", () => {
+            it("throws an error when called from a non-owner account", async() => {
+                try {
+                    await fundraiser.withdraw({from: accounts[3]});
+                    assert.fail("withdraw from non-ownser should not be allowed")
+                } catch (error) {
+                    assert.equal(error.reason, "Ownable: caller is not the owner", "error reason should match");
+                }
+            });
+
+            it("permits the owner account to call the function", async() => {
+                try {
+                    await fundraiser.withdraw({from: owner});
+                    assert(true, "no errors were thrown")
+                } catch (error) {
+                    assert.fail("should not have thrown an error")
+                }
+            });
+        });
+    });
 });
