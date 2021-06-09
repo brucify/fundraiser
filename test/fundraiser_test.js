@@ -115,6 +115,7 @@ contract("Fundraiser", accounts => {
 
     describe("withdrawing funds", () => {
         beforeEach(async () => {
+            await fundraiser.setBeneficiary(beneficiary, {from: owner}); // reset beneficiary address
             await fundraiser.donate({from: accounts[2], value: web3.utils.toWei('0.2')});
         });
 
@@ -139,8 +140,6 @@ contract("Fundraiser", accounts => {
         });
 
         it("transfers balance to beneficiary", async() => {
-            await fundraiser.setBeneficiary(beneficiary, {from: owner}); // reset beneficiary address
-
             const contractBalance0 = await web3.eth.getBalance(fundraiser.address);
             const beneficiaryBalance0 = await web3.eth.getBalance(beneficiary);
 
@@ -151,6 +150,17 @@ contract("Fundraiser", accounts => {
 
             assert.equal(contractBalance1, 0, "contract balance should be 0");
             assert.equal(beneficiaryBalance1-beneficiaryBalance0, contractBalance0, "beneficiary should have received all contract balance");
+        });
+
+        it("emits withdraw event", async() => {
+            const balance0 = await web3.eth.getBalance(beneficiary);
+            const tx = await fundraiser.withdraw({from: owner});
+            const balance1 = await web3.eth.getBalance(beneficiary);
+            const amount = await web3.eth.getBalance(fundraiser.address);
+
+            assert.equal(amount, 0, "Remaining amount should be 0");
+            assert.equal(tx.logs[0].event, "Withdraw", "event name should match");
+            assert.equal(tx.logs[0].args.amount, balance1-balance0, "value field should match");
         });
     });
 });
