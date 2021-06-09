@@ -51,10 +51,6 @@ contract Fundraiser is Ownable {
         emit Withdraw(balance);
     }
 
-    function myDonationsCount() public view returns(uint256) {
-        return _donations[msg.sender].length;
-    }
-
     function donate() public payable {
         Donation memory donation = Donation({
             value: msg.value,
@@ -81,5 +77,9 @@ contract Fundraiser is Ownable {
         }
 
         return (values, dates);
+    }
+
+    function myDonationsCount() public view returns(uint256) {
+        return _donations[msg.sender].length;
     }
 }
