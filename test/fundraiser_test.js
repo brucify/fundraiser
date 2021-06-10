@@ -132,9 +132,9 @@ contract("Fundraiser", accounts => {
             it("permits the owner account to call the function", async() => {
                 try {
                     await fundraiser.withdraw({from: owner});
-                    assert(true, "no errors were thrown")
+                    assert(true, "no errors were thrown");
                 } catch (error) {
-                    assert.fail("should not have thrown an error")
+                    assert.fail("should not have thrown an error");
                 }
             });
         });
@@ -161,6 +161,23 @@ contract("Fundraiser", accounts => {
             assert.equal(amount, 0, "Remaining amount should be 0");
             assert.equal(tx.logs[0].event, "Withdraw", "event name should match");
             assert.equal(tx.logs[0].args.amount, balance1-balance0, "value field should match");
+        });
+    });
+
+    describe("fallback function", () => {
+        it("increaases the totalDonations amount", async() => {
+            const value = web3.utils.toWei('0.0289');
+            const donations0 = await fundraiser.totalDonations();
+            const count0 = await fundraiser.donationsCount();
+
+            await web3.eth.sendTransaction({ to: fundraiser.address
+                                           , from: accounts[9]
+                                           , value: value
+                                           });
+            const donations1 = await fundraiser.totalDonations();
+            const count1 = await fundraiser.donationsCount();
+            assert.equal(donations1-donations0, value, "totalDonations should increase by the same amount");
+            assert.equal(count1-count0, 1, "donationsCount should increase by 1");
         });
     });
 });

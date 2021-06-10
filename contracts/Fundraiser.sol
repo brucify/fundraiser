@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity >=0.6.2 <0.9.0;
 
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -38,6 +38,11 @@ contract Fundraiser is Ownable {
         description = _description;
         beneficiary = _beneficiary;
         transferOwnership(_owner);
+    }
+
+    receive() external payable {
+        totalDonations = totalDonations.add(msg.value);
+        donationsCount++;
     }
 
     function setBeneficiary(address payable _beneficiary) public onlyOwner {
