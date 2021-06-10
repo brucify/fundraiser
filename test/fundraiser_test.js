@@ -1,6 +1,6 @@
 const FundraiserContract = artifacts.require("Fundraiser");
 
-contract("Fundraiser", accounts => {
+contract("Fundraiser", (accounts) => {
     let fundraiser;
     const name          = "Beneficiary name";
     const url           = "beneficiary.org";
