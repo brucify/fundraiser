@@ -29,12 +29,15 @@ contract("FundraiserFactory: createFundraiser", (accounts) => {
 
     it("emits fundraiserCreated event", async() => {
         fundraiserFactory = await FundraiserFactoryContract.deployed();
+        const owner = accounts[0];
         const tx = await fundraiserFactory.createFundraiser( name
                                                            , url
                                                            , imageURL
                                                            , description
                                                            , beneficiary
+                                                           , {from: owner}
                                                            );
         assert.equal(tx.logs[0].event, "fundraiserCreated", "event name should match");
+        assert.equal(tx.logs[0].args.owner, owner, "owner address should match");
     });
 });
